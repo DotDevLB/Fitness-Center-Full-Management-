@@ -1,0 +1,26 @@
+/* KioskProductManagement.css */
+
+/* Style the smaller input fields */
+.small-input {
+    width: 60px; /* Adjust the width as needed */
+    border: 1px solid #74787c;
+    border-radius: 5px;
+    padding: 5px;
+    outline: none;
+  }
+  /* Style the update button */
+  .update-btn {
+    margin-left: 10px;
+  }
+  
+  /* Style the table header */
+  table th {
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  
+  /* Style the rows with low quantity */
+  .table-danger {
+    background-color: #ffcccc;
+  }
+  
