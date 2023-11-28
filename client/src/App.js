@@ -1,31 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import HomeStaff from "./components/home/HomeStaff"
+import HomeAdmin from "./components/Admin/HomeAdmin"
+import KioskPOS from "./components/home/kiosk/KioskPOS";
+import React from "react";
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/');
-      console.log('Response:', response); // Log the response
-      const data = response.data; // Access the response data directly
-      console.log('Data:', data); // Log the data received
-      setMessage(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
+  const [currenctUser,setCurrenctUser]=React.useState(null);
   return (
-    <div className="App">
-      <h1>Response from Spring Boot:</h1>
-      <p>{message}</p>
-    </div>
+    <Routes>
+     
+    </Routes>
   );
 }
 
