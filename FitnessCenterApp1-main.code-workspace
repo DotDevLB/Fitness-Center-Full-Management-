@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "FitnessCenterApp1-main",
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}
