@@ -3,6 +3,9 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toastContianer, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import Cookies from "js-cookie";
 
 
 const orderSuccess = () => {
@@ -13,16 +16,51 @@ const orderFailure = () => {
   toast.error("Order Failed");
 };
 
+const generatePDF = () => {
+  const input = document.getElementById("invoice-container");
+
+  html2canvas(input)
+    .then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("invoice.pdf");
+    })
+    .catch((error) => console.error("Error generating PDF:", error));
+};
 
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-
+  const [currentUser, setCurrentUser] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    fetchData();
+    const userCookie = Cookies.get("currentUser");
+    if (userCookie) {
+      const parsedUser = JSON.parse(userCookie);
+      setCurrentUser(parsedUser);
+    }
+  }, []);
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:8080/products/all");
@@ -80,10 +118,9 @@ function App() {
     updateTotalPrice(updatedCart);
   };
 
-
   const generateInvoice = async () => {
-    let invoice = 'Invoice:\n\n';
-  
+    let invoice = "Invoice:\n\n";
+
     for (const item of cart) {
       const totalPriceForItem = item.price * item.quantity;
       invoice += `Item:\n`;
@@ -91,7 +128,7 @@ function App() {
       invoice += `Price per unit: ${item.price}$\n`;
       invoice += `Quantity: ${item.quantity}\n`;
       invoice += `Total price for this item: ${totalPriceForItem}$\n\n`;
-      
+
       try {
         await axios.put(`http://localhost:8080/products/update/${item.id}`, {
           quantityAvailable: item.quantityAvailable - item.quantity,
@@ -103,21 +140,21 @@ function App() {
         console.log(`Quantity updated for ${item.name}`);
         orderSuccess();
       } catch (error) {
-        console.error('Error updating quantity:', error);
+        console.error("Error updating quantity:", error);
         orderFailure();
       }
     }
-  
+
     invoice += `Total Price: ${totalPrice}$`;
     console.log(invoice);
     setCart([]);
   };
-  
 
   return (
-    <div className="container mt-5">
-       <ToastContainer postiotion="top-left"   />
-      <h1>Products</h1>
+    <div className="container mt-5" id="invoice-container">
+      <ToastContainer position="top-left" />
+      <h1>Staff: {currentUser && `${currentUser.id}::${currentUser.firstName} ${currentUser.lastName}`}</h1>
+      <h2>Products</h2>
       <div className="row">
         {products.map((product, index) => (
           <div
@@ -163,13 +200,20 @@ function App() {
           <p className="text-center mt-3">Total Price: {totalPrice}$</p>
         </div>
         <div className="container mt-5">
-      <button className="btn btn-primary" onClick={generateInvoice}>
-        Generate Invoice
-      </button>
-    </div>
+          <div className="d-flex justify-content-between">
+            <button
+              className="btn btn-primary btn-lg"
+              onClick={generateInvoice}
+            >
+              Submit
+            </button>
+            <button className="btn btn-primary btn-lg" onClick={generatePDF}>
+              Generate Invoice
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    
   );
 }
 
