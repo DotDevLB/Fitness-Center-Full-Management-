@@ -40,6 +40,11 @@ function AdminHome() {
           </Link>
           <br />
           <br />
+          <Link to="/homeAdmin/LeagueManagment">
+            <button className="btn btn-primary btn-lg">LeagueManagment</button>
+          </Link>
+          <br />
+          <br />
           <button className="btn btn-danger btn-lg" onClick={handleLogout}>
             Logout
           </button>

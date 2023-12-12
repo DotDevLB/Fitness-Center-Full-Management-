@@ -31,9 +31,12 @@ function HomeStaff() {
         </Link>
         <br />
         <br />
-        <Link to="/homeStaff/staff-profile" style={profileStyle}>
-          Manage Profile
+        <Link to="/homeUser/ViewLeague" className="btn-link">
+          <button className="btn btn-primary btn-lg">View League</button>
         </Link>
+       
+
+        
       </div>
     </div>
   );
