@@ -54,7 +54,7 @@ The Fitness Center Management System is an all-in-one solution designed to enhan
 ## Installation
 
 ```bash
-git clone https://yourprojectrepository.git
+git clone https://github.com/joe-hadchity/FitnessCenterFullManagement.git
 cd fitness-center-app
 npm install
 npm start
